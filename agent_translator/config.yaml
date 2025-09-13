@@ -1,0 +1,7 @@
+llm_model: gemini/gemini-1.5-flash
+max_tokens_per_batch: 2000
+output_directory: output
+preserve_formatting: true
+source_language: English
+target_language: Spanish
+temperature: 0.3

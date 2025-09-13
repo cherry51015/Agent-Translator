@@ -1,0 +1,26 @@
+# CrowdWisdomTrading Document Translation System Dependencies
+
+# Core CrewAI Framework
+crewai[tools]==0.177.0
+
+# LLM Integration
+litellm>=1.0.0
+
+# Document Processing
+python-docx>=0.8.11
+
+# Configuration and Data
+PyYAML>=6.0
+click>=8.0.0
+
+# Logging and Monitoring  
+structlog>=23.0.0
+
+# Additional utilities
+pathlib2>=2.3.7; python_version < "3.4"
+
+# Optional: For enhanced language support
+langdetect>=1.0.9
+
+# Optional: For better error handling
+tenacity>=8.0.0

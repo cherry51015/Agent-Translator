@@ -1,0 +1,136 @@
+document_identification_task:
+  description: >
+    Analyze the input document to determine:
+    1. Document type (research paper, review article, case study, etc.)
+    2. Academic field/discipline (medicine, engineering, humanities, etc.)  
+    3. Source language detection
+    4. Document structure overview (sections, complexity level)
+    5. Special elements present (tables, figures, equations, citations)
+    6. Generate specialized translation instructions for the academic field
+    
+    The document path is: {document_path}
+    Target language is: {target_language}
+    
+    Provide your analysis in this exact JSON format:
+    {{
+      "document_type": "detected document type",
+      "academic_field": "primary academic discipline", 
+      "source_language": "detected source language",
+      "complexity_level": "simple/moderate/complex",
+      "special_elements": ["list", "of", "special", "elements"],
+      "translation_instructions": "Specialized instructions for this field and document type",
+      "estimated_length": "approximate word count"
+    }}
+  expected_output: >
+    A comprehensive JSON analysis of the document including type, field, language,
+    and specialized translation instructions tailored to the academic discipline
+  agent: identification_agent
+  tools:
+    - document_analyzer_tool
+
+structural_analysis_task:
+  description: >
+    Perform detailed structural breakdown of the document:
+    1. Extract and map ALL formatting elements (bold, italic, underline)
+    2. Identify paragraph structure and alignment
+    3. Locate and analyze tables with headers and data
+    4. Find footnotes, endnotes, and references
+    5. Identify headers, subheaders, and section breaks
+    6. Create intelligent translation batches (max {max_tokens_per_batch} tokens each)
+    7. Ensure context preservation across batch boundaries
+    8. Map original formatting for reconstruction
+    
+    Document analysis: {document_analysis}
+    Document path: {document_path}
+    
+    Provide your analysis in this exact JSON format:
+    {{
+      "total_paragraphs": number,
+      "formatting_map": {{"paragraph_id": {{"bold": [positions], "italic": [positions], "underline": [positions]}}}},
+      "tables": [{{"table_id": "id", "headers": [], "rows": number, "position": "paragraph_number"}}],
+      "footnotes": [{{"id": "footnote_id", "position": "paragraph_number", "text": "footnote text"}}],
+      "headers": [{{"level": number, "text": "header text", "position": "paragraph_number"}}],
+      "translation_batches": [{{"batch_id": "id", "paragraphs": [list], "token_estimate": number, "context_note": "context info"}}]
+    }}
+  expected_output: >
+    Complete structural analysis with formatting map and intelligent translation batches
+    optimized for token usage while preserving context and meaning
+  agent: breakdown_agent
+  context: 
+    - document_identification_task
+  tools:
+    - document_structure_tool
+
+translation_task:
+  description: >
+    Execute professional academic translation:
+    1. Translate each batch using specialized academic prompts
+    2. Maintain consistency in terminology across batches
+    3. Preserve technical terms and academic concepts
+    4. Keep original formatting markers in place
+    5. Ensure smooth transitions between batches
+    6. Handle tables, footnotes, and special elements appropriately
+    7. Maintain academic tone and precision
+    
+    Document analysis: {document_analysis}
+    Structural breakdown: {structural_analysis} 
+    Source language: Auto-detected from identification
+    Target language: {target_language}
+    Translation instructions: Use field-specific guidance from identification task
+    
+    For each batch, provide translation in this format:
+    {{
+      "batch_id": "batch_identifier",
+      "original_content": "source text",
+      "translated_content": "target language text with formatting markers",
+      "terminology_notes": "key terms and translations used",
+      "quality_check": "translation quality assessment"
+    }}
+    
+    Final output should be complete translated document maintaining all original structure.
+  expected_output: >
+    Professionally translated document content with all batches completed,
+    terminology consistency maintained, and formatting markers preserved
+  agent: translator_agent
+  context:
+    - document_identification_task
+    - structural_analysis_task  
+  tools:
+    - batch_translator_tool
+
+document_reconstruction_task:
+  description: >
+    Reconstruct the translated content into a properly formatted DOCX file:
+    1. Create new DOCX document with identical structure
+    2. Apply all original formatting (bold, italic, underline, alignment)
+    3. Recreate tables with proper headers and data
+    4. Add footnotes and endnotes in correct positions
+    5. Maintain paragraph structure and spacing
+    6. Preserve headers, subheaders, and section breaks
+    7. Ensure visual layout matches original exactly
+    8. Save as '{output_filename}' in the output directory
+    
+    Translated content: {translated_content}
+    Structural analysis: {structural_analysis}
+    Output path: {output_path}
+    
+    The final document must be saved and accessible for download.
+    
+    Provide completion report in this format:
+    {{
+      "status": "completed/failed",
+      "output_file": "full path to saved file",
+      "elements_recreated": {{"tables": number, "footnotes": number, "formatted_paragraphs": number}},
+      "file_size": "size in MB",
+      "quality_verification": "formatting accuracy assessment"
+    }}
+  expected_output: >
+    A perfectly formatted DOCX file that maintains the original document's visual
+    structure and layout, with completion report confirming successful creation
+  agent: formatting_agent
+  context:
+    - document_identification_task
+    - structural_analysis_task
+    - translation_task
+  tools:
+    - docx_formatter_tool
