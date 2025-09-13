@@ -18,14 +18,17 @@ Copy code
 pip install -r agent_translator/requirements.txt
 Set your API key (Google Gemini):
 
+Windows (PowerShell):
+
 bash
 Copy code
-# Windows
 set GEMINI_API_KEY=your_actual_api_key_here
+Linux/Mac (bash/zsh):
 
-# Linux/Mac
+bash
+Copy code
 export GEMINI_API_KEY=your_actual_api_key_here
-Or add it to a .env file:
+Or create a .env file in the project root:
 
 ini
 Copy code
@@ -53,7 +56,7 @@ Copy code
 python agent_translator/diagnose.py
 ⚡ Troubleshooting
 1. Missing crew.py or import errors
-Make sure your structure looks like this (see 📂 Project Structure).
+Check your folder structure (see 📂 Project Structure below).
 
 2. Direct Translator error: input_file required
 Run with both the file and target language:
@@ -69,11 +72,11 @@ Copy code
 "message": "You exceeded your current quota"
 It means you hit the 50 free daily Gemini requests.
 
-Options:
+✅ Fixes:
 
 Wait 24 hours (quota resets daily).
 
-Use resumable_translator.py with batching:
+Use batching with the resumable translator:
 
 bash
 Copy code
