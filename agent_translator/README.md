@@ -1,54 +1,102 @@
-# AgentTranslator Crew
+# Agent-Translator  
 
-Welcome to the AgentTranslator Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+**Agent-Translator** is an AI-powered document translation system that supports multiple languages and formats like DOCX, PDF, and TXT.  
+Built with Python and NLP techniques, it delivers fast, context-aware translations for academic and professional use.  
 
-## Installation
+---
 
-Ensure you have Python >=3.10 <3.14 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
+## 🚀 Installation  
 
-First, if you haven't already, install uv:
-
+Clone the repository:  
 ```bash
-pip install uv
-```
+git clone https://github.com/cherry51015/Agent-Translator.git
+cd Agent-Translator
+Install dependencies:
 
-Next, navigate to your project directory and install the dependencies:
+bash
+Copy code
+pip install -r agent_translator/requirements.txt
+Set your API key (Google Gemini):
 
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-### Customizing
+bash
+Copy code
+# Windows
+set GEMINI_API_KEY=your_actual_api_key_here
 
-**Add your `OPENAI_API_KEY` into the `.env` file**
+# Linux/Mac
+export GEMINI_API_KEY=your_actual_api_key_here
+Or add it to a .env file:
 
-- Modify `src/agent_translator/config/agents.yaml` to define your agents
-- Modify `src/agent_translator/config/tasks.yaml` to define your tasks
-- Modify `src/agent_translator/crew.py` to add your own logic, tools and specific args
-- Modify `src/agent_translator/main.py` to add custom inputs for your agents and tasks
+ini
+Copy code
+GEMINI_API_KEY=your_actual_api_key_here
+▶️ Usage
+Translate with the main CLI:
 
-## Running the Project
+bash
+Copy code
+python agent_translator/main.py translate academic_paper.docx --target-language "Spanish"
+Use the direct translator (simpler):
 
-To kickstart your crew of AI agents and begin task execution, run this from the root folder of your project:
+bash
+Copy code
+python agent_translator/direct_translator.py academic_paper.docx -t Spanish
+Use the resumable translator (batching & resume support):
 
-```bash
-$ crewai run
-```
+bash
+Copy code
+python agent_translator/resumable_translator.py academic_paper.docx -t Spanish --batch-size 3
+Run diagnostics:
 
-This command initializes the agent_translator Crew, assembling the agents and assigning them tasks as defined in your configuration.
+bash
+Copy code
+python agent_translator/diagnose.py
+⚡ Troubleshooting
+1. Missing crew.py or import errors
+Make sure your structure looks like this (see 📂 Project Structure).
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+2. Direct Translator error: input_file required
+Run with both the file and target language:
 
-## Understanding Your Crew
+bash
+Copy code
+python direct_translator.py academic_paper.docx -t Spanish
+3. API quota limit reached
+If you see:
 
-The agent_translator Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+json
+Copy code
+"message": "You exceeded your current quota"
+It means you hit the 50 free daily Gemini requests.
 
-## Support
+Options:
 
-For support, questions, or feedback regarding the AgentTranslator Crew or crewAI.
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+Wait 24 hours (quota resets daily).
 
-Let's create wonders together with the power and simplicity of crewAI.
+Use resumable_translator.py with batching:
+
+bash
+Copy code
+python resumable_translator.py academic_paper.docx -t Spanish --batch-size 3
+Upgrade to a paid Gemini plan for more requests.
+
+4. Debugging with logs
+Check the detailed error log:
+
+bash
+Copy code
+cat translation_system.log
+📂 Project Structure
+bash
+Copy code
+agent_translator/
+ ├── main.py                  # CLI entry point
+ ├── direct_translator.py     # Simple direct translation
+ ├── resumable_translator.py  # Resume-friendly translator
+ ├── diagnose.py              # Diagnostics
+ ├── requirements.txt
+ ├── config.yaml
+ └── src/agent_translator/
+      ├── crew.py
+      ├── tools/
+      └── config/
